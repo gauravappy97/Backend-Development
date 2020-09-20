@@ -1,0 +1,1 @@
+This is a test file for only read and write purpose using built in module in node.js
