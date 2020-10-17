@@ -16,25 +16,47 @@ app.post('/',function(req,res){
     var firstName = req.body.fname;
     var lastName = req.body.lname;
     var Email = req.body.email;
-    console.log(firstName, lastName, Email);
+    // console.log(firstName, lastName, Email);
+
+    var data = {
+        members: [
+            {
+                email_address: Email,
+                status: "subscribed",
+                merge_fields: {
+                    FNAME: firstName,
+                    LNAME: lastName
+                }
+            }
+        ]
+    };
+    var jsonData = JSON.stringify(data);
 
     var option = {
         url: "https://us2.api.mailchimp.com/3.0/lists/bcb16b7360",
         method: "POST",
         headers: {
             "Authorization": "Gaurav c92c6f2777e05471d39a661f6d751820-us2"
-        }
-    }
+        },
+        body: jsonData
+    };
     
     request(option,function(error,response,body){
         if(error){
-            console.log(error)
+            res.sendFile(__dirname+'/failure.html')
         }else{
-            console.log(response.statusCode);
+            if(res.statusCode===200){
+                res.sendFile(__dirname+'/success.html')
+            }else{
+                res.sendFile(__dirname+'/failure.html')
+            }
         }
     });
 });
 
+app.post("/failure",function(req, res){
+    res.redirect("/");
+});
 
 app.listen(3000,function(){
     console.log('server is running on port 3000');
